@@ -85,30 +85,6 @@ public class MyArraylist<T> implements Iterable<T> {
 		}
 	}
 
-	public static void main(String[] args) {
-		MyArraylist<Integer> lists = new MyArraylist<Integer>();
-		for (int i = 0; i < 15; i++) {
-			lists.add(i);
-			System.out.println(lists);
-		}
-
-		// int i=0;
-		// for (Integer integer : lists){
-		// System.out.println(integer);
-		// if(i == 1){
-		// lists.remove(i);
-		// }
-		// i++;
-		// }
-
-		lists.add(-1, 9);
-		System.out.println(lists);
-
-		lists.set(0, 9);
-		System.out.println(lists);
-
-	}
-
 	public int size() {
 		return size;
 	}
