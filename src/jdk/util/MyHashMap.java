@@ -1,7 +1,10 @@
-package java.util;
+package jdk.util;
 
+import java.util.AbstractSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Iterator;
 
 public class MyHashMap<K, V> {
 
@@ -123,6 +126,93 @@ public class MyHashMap<K, V> {
 		};	
 		
 	}
+	
+	Set<K> keySet;
+	
+	public Set<K> keySet(){
+		return keySet == null ? (keySet = new KeySet()) : null;
+	}
+	
+	Set<Map.Entry<K,V>> entrySet;
+	
+	public Set<Map.Entry<K,V>> entrySet(){
+		return entrySet == null ? (entrySet = new EntrySet()) : null;
+	}
+	
+	class EntrySet extends AbstractSet<Map.Entry<K,V>>{
+
+		@Override
+		public Iterator<Map.Entry<K,V>> iterator() {
+			return new EntryIterator();
+		}
+
+		@Override
+		public int size() {
+			return size;
+		}
+		
+	}
+	
+	final class EntryIterator extends HashIterator implements Iterator<Map.Entry<K,V>> {
+		public final Node<K,V> next() {
+			return nextNode();
+		}
+	}
+	
+	class KeySet extends AbstractSet<K>{
+
+		@Override
+		public Iterator<K> iterator() {
+			return new KeyIterator();
+		}
+
+		@Override
+		public int size() {
+			return size;
+		}
+		
+	}
+	
+	final class KeyIterator extends HashIterator implements Iterator<K> {
+		public final K next() {
+			return nextNode().key;
+		}
+	}
+	
+	
+	public class HashIterator{
+		
+		Node<K,V>[] nodes;
+		Node<K,V> prve;
+		Node<K,V> next;
+		int index;
+		
+		public HashIterator(){//得到 keys.iterator();的时候执行此构造方法，找到第一个链表
+			//找到第一个元素
+			nodes = table;
+			index = 0;
+			prve = next = null;
+			do {
+				prve = next = table[index];
+			} while((++index < table.length) && next == null);
+		}
+		
+		final Node<K,V> nextNode(){
+			Node<K,V> e = next;
+			if((next = (prve = e).next) == null && nodes != null){//循环链表
+				do {
+				} while(index < table.length && (next = nodes[index++]) == null);//找到下一个链表
+			}
+			return e;
+		}
+		
+		public boolean hasNext() {
+			return next != null;
+		}
+	}	
+	 
+	 
+  
 	
 	public void resize(){
 		int len = size << 1;
